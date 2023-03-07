@@ -1,0 +1,32 @@
+.auth-page {
+    .auth-login-page {
+        height: 100vh;
+        .login {
+            padding-top: 100px;
+            .title-thank {
+                font-size: 48px;
+                color: #CDCDCD;
+                font-weight: 600;
+                text-align: center;
+                margin-bottom: 66px;
+            }
+            .sub-title{
+                font-size: 32px;
+                font-weight: 600;
+                text-align: center;
+                &.sub-title1 {
+                    margin-bottom: 120px;
+                }
+            }
+            .btn-login-line{
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background-color: #39cd00;
+                color: white;
+                margin: 0px auto;
+                margin-top: 102px;
+            }
+        }
+    }
+}
