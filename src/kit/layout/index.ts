@@ -4,7 +4,7 @@ import { BlankLayout } from './blank-layout';
 
 export { PageWrapper } from './page-wrapper';
 
-export enum CrmLayout {
+export enum ProjectLayout {
   NORMAL,
   AUTH,
   BLANK,
@@ -12,11 +12,11 @@ export enum CrmLayout {
 }
 
 const availableLayout = {
-  [CrmLayout.AUTH]: AuthLayout,
-  [CrmLayout.NORMAL]: NormalLayout,
-  [CrmLayout.BLANK]: BlankLayout,
+  [ProjectLayout.AUTH]: AuthLayout,
+  [ProjectLayout.NORMAL]: NormalLayout,
+  [ProjectLayout.BLANK]: BlankLayout,
 }
 
-export function getLayout(layout?: CrmLayout) {
-  return availableLayout[layout || CrmLayout.NORMAL];
+export function getLayout(layout?: ProjectLayout) {
+  return availableLayout[layout || ProjectLayout.NORMAL];
 }

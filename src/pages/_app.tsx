@@ -1,10 +1,11 @@
 import { getToken } from '@app/api/auth/get-access-token';
 import { CLIENT_ID, CLIENT_SECRET, CODE_VERIFIER, GRANT_TYPE, REDIRECT_URI } from '@app/const/common.const';
 import { CrmAppContext } from '@app/context/crm-app.ctx';
-import { CrmLayout, getLayout } from '@app/crmkit/layout';
+import { ProjectLayout, getLayout } from '@app/kit/layout';
 import { useSubscription } from '@app/hooks/subscription';
 import { getAccessToken, saveUserCredential } from '@app/services/auth';
 import '@app/styles/globals.scss'
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { NextPage } from 'next';
 import type { AppProps } from 'next/app'
 import { useRouter } from 'next/router'
@@ -12,7 +13,7 @@ import { useEffect } from 'react'
 
 
 type NextPageWithLayout = NextPage & {
-  layout?: CrmLayout;
+  layout?: ProjectLayout;
 }
 
 type AppPropsWithLayout = AppProps & {
@@ -42,10 +43,12 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   },[])
 
   return (
-    <CrmAppContext.Provider value={{}}>
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
-    </CrmAppContext.Provider>
+    <GoogleOAuthProvider clientId={process.env.CLIENT_ID}>
+      <CrmAppContext.Provider value={{}}>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </CrmAppContext.Provider>
+    </GoogleOAuthProvider>
   )
 }
