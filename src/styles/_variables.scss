@@ -1,0 +1,6 @@
+$color_white: #ffffff;
+$color_red: red;
+
+@mixin background_opacity($r,$g,$b,$opacity) {
+  background-color: rgba($r, $g, $b, $opacity);
+}

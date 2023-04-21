@@ -6,9 +6,15 @@ import { GoogleLogin, useGoogleLogin } from '@react-oauth/google';
 import { Button } from 'antd';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form';
 
 export const Login = () => {
 	const router = useRouter();
+	const { register, handleSubmit, watch, formState: { errors } } = useForm();
+
+	const onSubmit = data => console.log(data);
+
+  // console.log(watch("username")); 
 
 	const login = useGoogleLogin({
 		onSuccess: async (codeResponse) => {
@@ -21,12 +27,25 @@ export const Login = () => {
 	return (
 		<PageWrapper metadata={{}}>
 			<div className='auth-login-page'>
-				<div className="login">
-					<h2>React Google Login</h2>
-					<br />
-					<br />
-					<button onClick={() => login()} className='btn-login'>Sign in with Google 🚀 </button>
+				<div className="background">
+					<div className="shape"></div>
+					<div className="shape"></div>
 				</div>
+				<form onSubmit={handleSubmit(onSubmit)}>
+						<h3>Login Here</h3>
+
+						<label>Username</label>
+						<input type="text" placeholder="Email or Phone" id="username" {...register("username")}/>
+
+						<label>Password</label>
+						<input type="password" placeholder="Password" id="password" {...register("password")}/>
+
+						<button className='btn-login' type='submit'>Log In</button>
+						<div className="social">
+							<img src="/assets/icons/icon-google.svg" alt="" onClick={() => login()}/>
+							<img src="/assets/icons/icon-facebook.svg" alt="" />
+						</div>
+				</form>
 			</div>
 		</PageWrapper>
 	);
