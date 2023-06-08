@@ -6,6 +6,8 @@ import { GoogleLogin, useGoogleLogin } from '@react-oauth/google';
 import { Button } from 'antd';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react'
+import ReactFacebookLogin from 'react-facebook-login';
+import FacebookLogin from "react-facebook-login";
 import { useForm } from 'react-hook-form';
 
 export const Login = () => {
@@ -13,6 +15,10 @@ export const Login = () => {
 	const { register, handleSubmit, watch, formState: { errors } } = useForm();
 
 	const onSubmit = data => console.log(data);
+
+	const [loginFb, setLoginFb] = useState(false);
+  const [data, setData] = useState({});
+  const [picture, setPicture] = useState("");
 
   // console.log(watch("username")); 
 
@@ -23,6 +29,24 @@ export const Login = () => {
 		},
 		onError: (error) => console.log('Login Failed:', error)
 	});
+
+
+	const responseFacebook = (response) => {
+    console.log(response);
+    // Login failed
+    if (response.status === "unknown") {
+      alert("Login failed!");
+      setLoginFb(false);
+      return false;
+    }
+    setData(response);
+    setPicture(response.picture.data.url);
+    if (response.accessToken) {
+      setLoginFb(true);
+    } else {
+      setLoginFb(false);
+    }
+  };
 
 	return (
 		<PageWrapper metadata={{}}>
@@ -43,7 +67,16 @@ export const Login = () => {
 						<button className='btn-login' type='submit'>Log In</button>
 						<div className="social">
 							<img src="/assets/icons/icon-google.svg" alt="" onClick={() => login()}/>
-							<img src="/assets/icons/icon-facebook.svg" alt="" />
+							{/* <img src="/assets/icons/icon-facebook.svg" alt="" /> */}
+							<FacebookLogin
+								appId={process.env.FACEBOOK_APP_ID}
+								autoLoad={false}
+								fields="name,email,picture"
+								scope="public_profile,email,user_friends"
+								callback={responseFacebook}
+								icon="fa-facebook"
+								textButton='Facebook'
+							/>
 						</div>
 				</form>
 			</div>
