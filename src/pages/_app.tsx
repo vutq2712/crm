@@ -38,7 +38,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
 
   useEffect(()=>{
     if (!getAccessToken()) {
-      router.push('/auth/login');
+      // router.push('/auth/login');
     }
   },[])
 

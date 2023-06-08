@@ -1,0 +1,37 @@
+.data-table {
+  // overflow-y: hidden;
+  border-spacing: 0;
+  table-layout: fixed;
+  border-collapse: collapse;
+  thead {
+    // z-index: 1;
+    tr {
+      display: block;
+      th {
+        position: sticky;
+        background-color: rgb(20, 29, 39);
+        color: rgb(173, 179, 192);
+        height: 30px;
+        padding: 10px;
+        // width: 20% ;
+      }
+    }
+  }
+  tbody {
+    height: calc(100vh - 100px);
+    width: calc(100vw - 10px);
+    display: block;
+    overflow: auto;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;
+    td {
+      padding: 10px 20px;
+      width: 100% ;
+
+    }
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}

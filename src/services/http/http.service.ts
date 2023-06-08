@@ -6,7 +6,7 @@ import { clearUserCredential, getAccessToken } from '@app/services/auth'
 export const handleError = (requestOpts: RequestOptions) => (error: AjaxResponse<JsonResponse<any>>) => {
   if (error.status === 401) {
     clearUserCredential();
-    window.location.href = '/auth/login';
+    // window.location.href = '/auth/login';
   }
 
   if (requestOpts.onError === 'throwOriginal') {
