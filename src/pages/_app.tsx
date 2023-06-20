@@ -10,6 +10,7 @@ import { NextPage } from 'next';
 import type { AppProps } from 'next/app'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 
 type NextPageWithLayout = NextPage & {
@@ -42,13 +43,17 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
     }
   },[])
 
+  const queryClient = new QueryClient()
+
   return (
     <GoogleOAuthProvider clientId={process.env.CLIENT_ID}>
+    <QueryClientProvider client={queryClient}>
       <CrmAppContext.Provider value={{}}>
         <Layout>
           <Component {...pageProps} />
         </Layout>
       </CrmAppContext.Provider>
+      </QueryClientProvider>
     </GoogleOAuthProvider>
   )
 }

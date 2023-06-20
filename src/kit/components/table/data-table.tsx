@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react'
+import * as _ from 'lodash';
 
 export interface ColumnProps {
   title?: string,
@@ -13,24 +14,62 @@ export interface ColumnProps {
 interface DataTableProps {
   rowData?: any,
   columnConfig?: ColumnProps[],
+  isGroupHeader?: boolean,
+  prevCountRef?: any,
 }
 
 function DataTable(props: DataTableProps) {
-  const {rowData, columnConfig} = props;
+  const {rowData, columnConfig, prevCountRef} = props;
   const itemsRef = useRef([]);
-  const itemsRefChild = useRef([]);
 
-  console.log(itemsRef?.current,'arr')
+  console.log(itemsRef.current);
   useEffect(()=>{
+    
     if (itemsRef.current.length > 0) {
-      
       console.log(itemsRef.current.reduce((cur,acc)=> {
         return itemsRef[cur]
         
       },0),'itemsRef');
     }
     
-  },[itemsRef])
+  },[])
+
+  const getLocations = (local) => {  
+    const location = { ...local }; // copy
+    delete location.children;
+  
+    if (!local.children || !local.children.length) {
+      return location; // return copied
+    }
+  
+    // return copied, but pass original to flatMapDeep
+    return [
+      location, 
+      _.flatMapDeep(local.children, getLocations)
+    ];
+  }
+
+  const getColumns = (columns) => {
+    var columnsChilds : any[] = columns.map((m,i) => {
+      if (m.children && m.children.length) {
+        let children = [ ...m.children.map(item=>{
+          return {
+            ...item,
+            parent: m.dataIndex
+          }
+        })];
+        return children
+      }
+      return m;
+    })
+    return columnsChilds    
+  };
+  
+  useEffect(()=>{
+    console.log(getColumns(columnConfig).flat());
+    
+  },[])
+  
 
   return (
     <div className='data-table'>
@@ -40,12 +79,12 @@ function DataTable(props: DataTableProps) {
             {columnConfig.map((item, idx) => {
               if (item.headerGroup) {
                 return (
-                  <th style={{width: 100}} colSpan={item.children?.length}>
+                  <th key={idx} colSpan={item.children?.length}>
                     <div>
-                      <div>{item.headerGroup}</div>
+                      <div className='header-group'>{item.headerGroup}</div>
                       <div style={{display: 'flex', justifyContent: 'space-between', alignItems:'center'}}>
                         {item.children.map((em,im)=>(
-                          <b>{em.title}</b>    
+                          <div className={`header-child ${im !== item.children.length - 1 ? 'border-right' : ''}`} style={{width: `${100/(item.children.length)}%`}}  key={im}>{em.title}</div>    
                         ))}
                       </div>
                     </div>
@@ -53,33 +92,22 @@ function DataTable(props: DataTableProps) {
                 )
               }
               return (
-                <th>{item.title}</th>    
+                <th key={idx} rowSpan={2} style={{width: itemsRef.current[item.dataIndex]?.offsetWidth}}>{item.title}</th>    
               )
             })}
           </tr>
         </thead>
         <tbody>
           {rowData && rowData.map((row, idx) => (
-            <tr key={idx}>
-              {columnConfig.map((item, i) => {
-                if (item.headerGroup) {
-                  return (
-                    <>
-                      {item.children.map((em,im)=>(
-                        <td ref={el => {
-                          if (itemsRef.current[item.dataIndex]) {
-                            let itemsRefChilds;
-                            itemsRefChilds[im] = el
-                            // itemsRefChild.current[im] = el;
-                            itemsRef.current[item.dataIndex] = itemsRefChilds
-                          }
-                        } }>{row[em.dataIndex]}</td>    
-                      ))}
-                    </>
-                  )
-                }
+            <tr key={idx} className='row-height'>
+              {getColumns(columnConfig).flat().map((item, i) => {                
                 return (
-                  <td ref={el => itemsRef.current[item.dataIndex] = el} >{row[item.dataIndex]}</td>    
+                  <td key={i} ref={el => 
+                    {setTimeout(()=>{
+                      itemsRef.current[item.dataIndex] = el
+                    },200)}
+                    }  className={(prevCountRef && +row[item.dataIndex] > prevCountRef[idx][item.dataIndex]) ?
+                    'styleUp' : 'styleDown'}>{row[item.dataIndex]}</td>    
                 )
               })}
             </tr>
